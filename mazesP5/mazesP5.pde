@@ -11,7 +11,7 @@ void setup() {
   //frameRate(10);
   noFill();
   
-  graph = new Graph();
+  graph = new Graph(false);
 }
 
 void draw() {
@@ -20,7 +20,7 @@ void draw() {
   println(frameCount);
   
   graph.render();
-  graph.tick();
+  //graph.tick();
   
   //saveFrame("data/######.png");
 }

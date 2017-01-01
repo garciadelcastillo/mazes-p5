@@ -19,20 +19,27 @@ class Cursor {
     ellipse(currentNode.x, currentNode.y, 10, 10);
   }
   
-  void searchNext() {
+  boolean searchNext() {
     ArrayList<Node> unvisitedNeighbours = currentNode.getUnvisitedNeighbours();
      
+    boolean walked = false;
     int size = unvisitedNeighbours.size();
     if (size == 0) {
-      boolean returned = walkBack();
-      if (!returned) {
-        println("Stuck in an origin");
+      walked = walkBack();
+      if (!walked) {
+        println("Finished graph!");
       }
     } else {
       Node randomNode = unvisitedNeighbours.get((int) random(size));
       linkTo(randomNode);
+      walked = true;
     }
-    
+    return walked;
+  }
+  
+  // Starts a random walk that iterates over all possible cells.
+  void searchDeep() {
+    while(searchNext()) {/* */}
   }
   
   boolean walkBack() {

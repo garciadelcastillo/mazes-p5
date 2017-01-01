@@ -7,7 +7,10 @@ class Graph {
   int cellsX = 100;
   int cellsY = 50;
   
-  Graph() {
+  boolean tickerGeneration;
+  boolean complete = false;
+  
+  Graph(boolean useTicker) {
     nodes = new ArrayList<Node>();
     links = new ArrayList<Link>();
  
@@ -16,6 +19,12 @@ class Graph {
     assignNeighbours(cellsX, cellsY);
     
     cursor = new Cursor(this, nodes.get(0));
+    
+    tickerGeneration = useTicker;
+    
+    if (!tickerGeneration) {
+      generateFullGraph();
+    }
   }
   
   void generateNodes(int count) {
@@ -71,6 +80,10 @@ class Graph {
   
   void tick() {
     cursor.searchNext();
+  }
+  
+  void generateFullGraph() {
+    cursor.searchDeep();
   }
   
 }
