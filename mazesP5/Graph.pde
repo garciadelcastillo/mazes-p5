@@ -1,56 +1,67 @@
 class Graph {
-  
+
   ArrayList<Node> nodes;
   ArrayList<Link> links;
   ArrayList<Wall> walls;
   Cursor cursor;
-  
-  int cellsX = 20;
-  int cellsY = 20;
-  
+  Node startNode;
+
+  int cellsX = 31;
+  int cellsY = 31;
+  float depth = 0.05;  // normalized distance to graph center
+
+  float centerX, centerY;
+
   boolean tickerGeneration;
   boolean complete = false;
-  
+
   Graph(boolean useTicker) {
     nodes = new ArrayList<Node>();
     links = new ArrayList<Link>();
     walls = new ArrayList<Wall>();
- 
+
     //generateNodes(200);
     generateNodes(cellsX, cellsY);
     assignNeighbours(cellsX, cellsY);
-    
-    cursor = new Cursor(this, nodes.get(0));
-    
+    computeCenter();
+
+    //this.startNode = nodes.get(nodes.size() / 2);  // central node
+    this.startNode = nodes.get(nodes.size() - cellsX / 2 - 1);  // bottom center
+    //this.startNode = nodes.get(cellsX + cellsX / 2);  // top center
+    //this.startNode = nodes.get(cellsX);  // top left corner
+    cursor = new Cursor(this, this.startNode);  // start from the center?
+
     tickerGeneration = useTicker;
-    
+
     if (!tickerGeneration) {
       generateFullGraph();
     }
   }
-  
+
   void generateNodes(int count) {
     for (int i = 0; i < count; i++) {
       nodes.add(new Node(i));
     }
   }
-  
+
   void generateNodes(int countX, int countY) {
     float dx = width / (float) countX;
     float dy = height / (float) countY;
-    
+
     int it = 0;
     float x, y;
-    for (int i = 0; i < countX; i++) {
-      for (int j = 0; j < countY; j++) {
+    boolean solid = false;
+    
+    for (int j = 0; j < countY; j++) {
+      for (int i = 0; i < countX; i++) {
         x = 0.5 * dx + i * dx;
         y = 0.5 * dy + j * dy;
-        nodes.add(new Node(it++, x, y, dx, dx));
+        solid = (i == 0 || i == countX - 1 || j == 0 || j == countY - 1);  // border walls
+        nodes.add(new Node(it++, x, y, dx, dy, solid));
       }
     }
-    
   }
-  
+
   void assignNeighbours(float dist) {
     int len = nodes.size();
     for (int i = 0; i < len; i++) {
@@ -64,49 +75,69 @@ class Graph {
       }
     }
   }
-  
+
+  void computeCenter() {
+    float mx = 0, 
+      my = 0;
+    for (Node n : nodes) {
+      mx += n.x;
+      my += n.y;
+    }
+    centerX = mx / nodes.size();
+    centerY = my / nodes.size();
+    //println("Graph center: " + centerX + " " + centerY);
+  }
+
   void assignNeighbours(int countX, int countY) {
     float max = width / (float) countX;
     if (height / (float) countY > max) 
       max = height / (float) countY;
-    
+
     assignNeighbours(1.05 * max);
   }
-  
+
   void render() {
     for (Node n : nodes) 
       n.render();
-      
+
     for (Wall w : walls) {
-      stroke(0);
-      strokeWeight(3);
-      w.render();
+      //w.renderLine();
+      w.renderQuad();
     }
-    
+
     if (tickerGeneration) 
       cursor.render();
+      
+    ellipse(startNode.x, startNode.y, 4, 4);
   }
-  
+
   void tick() {
     cursor.searchNext();
   }
-  
+
   void generateFullGraph() {
     cursor.searchDeep();
     generateWalls();
+    sortWallsByDistance();
   }
-  
+
   void generateWalls() {
     // Search all nodes, compare neighbours to i/o links, 
     // and create walls between unconnected nodes.
     ArrayList<Node> neigs;
     for (Node node : nodes) {
+      if (node.solid) continue;  // if solid, let the neoghbouring non-solid node create the wall
+
       neigs = node.getUnlinkedNeighbours();
       for (Node n : neigs) {
-        walls.add(new Wall(node, n));
+        walls.add(new Wall(this, node, n));
       }
     }
-    
   }
-  
+
+  // Resorts the walls list with elements from farthest to closest to the center.
+  // This is useful for correct overlaps when rendering the walls.
+  void sortWallsByDistance() {
+    Collections.sort(walls);  // sortable because it implements the Comparable interface
+  }
 }
