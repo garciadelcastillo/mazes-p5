@@ -6,6 +6,7 @@ class Cursor {
   ArrayList<Node> stack;  // all the nodes visited in current branch
   
   int visitedCount = 0;  // how many nodes has the cursor visited in the currrrent branch?
+  int maxDepth = 0;      // what is the max depth ever reached?
   
   Cursor(Graph parent_, Node startNode) {
     parent = parent_;
@@ -69,6 +70,9 @@ class Cursor {
     
     this.visitedCount++;
     targetNode.visitDepth = this.visitedCount;
+    if (maxDepth < visitedCount) {
+      maxDepth = visitedCount;
+    }
   }
   
   void moveTo(Node targetNode) {

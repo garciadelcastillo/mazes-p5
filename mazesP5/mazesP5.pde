@@ -15,11 +15,11 @@ void setup() {
   //noFill();
 
   graph = new Graph(false);
-  //noLoop();
+  noLoop();
 }
 
 void draw() {
-  //beginRecord(PDF, "maze.pdf");
+  beginRecord(PDF, "maze.pdf");
   background(255);
 
   // These go here to be picked up by the PDF renderer
@@ -36,8 +36,8 @@ void draw() {
   graph.render();
   //graph.tick();
   
-  //saveFrame("screenshots/maze_" + now() + ".png");
-  //endRecord();
+  saveFrame("screenshots/maze_" + now() + ".png");
+  endRecord();
 }
 
 void keyPressed() {

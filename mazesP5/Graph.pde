@@ -40,7 +40,7 @@ class Graph {
 
   void generateNodes(int count) {
     for (int i = 0; i < count; i++) {
-      nodes.add(new Node(i));
+      nodes.add(new Node(this, i));
     }
   }
 
@@ -57,7 +57,7 @@ class Graph {
         x = 0.5 * dx + i * dx;
         y = 0.5 * dy + j * dy;
         solid = (i == 0 || i == countX - 1 || j == 0 || j == countY - 1);  // border walls
-        nodes.add(new Node(it++, x, y, dx, dy, solid));
+        nodes.add(new Node(this, it++, x, y, dx, dy, solid));
       }
     }
   }
@@ -108,7 +108,7 @@ class Graph {
     if (tickerGeneration) 
       cursor.render();
       
-    ellipse(startNode.x, startNode.y, 4, 4);
+    //ellipse(startNode.x, startNode.y, 4, 4);
   }
 
   void tick() {
@@ -119,6 +119,7 @@ class Graph {
     cursor.searchDeep();
     generateWalls();
     sortWallsByDistance();
+    computeNodeFloor();
   }
 
   void generateWalls() {
@@ -139,5 +140,11 @@ class Graph {
   // This is useful for correct overlaps when rendering the walls.
   void sortWallsByDistance() {
     Collections.sort(walls);  // sortable because it implements the Comparable interface
+  }
+  
+  void computeNodeFloor() {
+    for (Node n : nodes) {
+      n.computeFloor();
+    }
   }
 }
