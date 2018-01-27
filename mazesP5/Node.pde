@@ -11,6 +11,8 @@ class Node {
   float w, h, w2, h2;
   
   int visitDepth = 0;  // when the cursor reaches this node, how many nodes were visited before?
+  
+  float[] v = new float[8];  // quad floor vertices
 
   Node(int id_, float x_, float y_, float w_, float h_, boolean solid) {
     id = id_;
@@ -47,6 +49,8 @@ class Node {
     //if (this.solid) {
     //  quad(x - w2, y - h2, x + w2, y - h2, x + w2, y + h2, x - w2, y + h2);
     //}
+    
+    text(this.visitDepth, x, y);
   }
 
   void renderNeighbourConnections() {

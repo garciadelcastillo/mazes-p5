@@ -11,15 +11,15 @@ Graph graph;
 void setup() {
   size(800, 800);
   //fullScreen();
-  //frameRate(10);
+  frameRate(30);
   //noFill();
 
   graph = new Graph(false);
-  noLoop();
+  //noLoop();
 }
 
 void draw() {
-  beginRecord(PDF, "maze.pdf");
+  //beginRecord(PDF, "maze.pdf");
   background(255);
 
   // These go here to be picked up by the PDF renderer
@@ -28,16 +28,21 @@ void draw() {
   strokeWeight(1);
   fill(191, 191);
   strokeJoin(BEVEL);
+  textAlign(CENTER, CENTER);
+  textSize(12);
 
   //println(frameCount);
 
   graph.render();
   //graph.tick();
   
-  saveFrame("screenshots/maze_" + now() + ".png");
-  endRecord();
+  //saveFrame("screenshots/maze_" + now() + ".png");
+  //endRecord();
 }
 
+void keyPressed() {
+  //graph.tick();
+}
 
 
 

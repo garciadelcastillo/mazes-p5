@@ -3,7 +3,9 @@ class Cursor {
   Node currentNode;
   Graph parent;
  
-  ArrayList<Node> stack;
+  ArrayList<Node> stack;  // all the nodes visited in current branch
+  
+  int visitedCount = 0;  // how many nodes has the cursor visited in the currrrent branch?
   
   Cursor(Graph parent_, Node startNode) {
     parent = parent_;
@@ -14,9 +16,14 @@ class Cursor {
   }
   
   void render() {
+    pushStyle();
     noStroke();
     fill(255, 0, 0, 100);
     ellipse(currentNode.x, currentNode.y, 10, 10);
+    fill(0, 0, 255);
+    textSize(20);
+    text(visitedCount, currentNode.x, currentNode.y);
+    popStyle();
   }
   
   boolean searchNext() {
@@ -44,9 +51,10 @@ class Cursor {
   
   boolean walkBack() {
     int size = stack.size();
-    if (size > 0) {
-      moveTo(stack.get(size - 1));
+    if (size > 1) {
+      moveTo(stack.get(size - 2));
       stack.remove(size - 1);
+      this.visitedCount--;
       return true;
     }
     return false;
@@ -58,6 +66,9 @@ class Cursor {
     moveTo(targetNode);
     targetNode.visited = true;
     stack.add(targetNode);
+    
+    this.visitedCount++;
+    targetNode.visitDepth = this.visitedCount;
   }
   
   void moveTo(Node targetNode) {
