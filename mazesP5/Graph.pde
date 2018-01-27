@@ -2,10 +2,11 @@ class Graph {
   
   ArrayList<Node> nodes;
   ArrayList<Link> links;
+  ArrayList<Wall> walls;
   Cursor cursor;
   
-  int cellsX = 100;
-  int cellsY = 50;
+  int cellsX = 20;
+  int cellsY = 20;
   
   boolean tickerGeneration;
   boolean complete = false;
@@ -13,6 +14,7 @@ class Graph {
   Graph(boolean useTicker) {
     nodes = new ArrayList<Node>();
     links = new ArrayList<Link>();
+    walls = new ArrayList<Wall>();
  
     //generateNodes(200);
     generateNodes(cellsX, cellsY);
@@ -43,7 +45,7 @@ class Graph {
       for (int j = 0; j < countY; j++) {
         x = 0.5 * dx + i * dx;
         y = 0.5 * dy + j * dy;
-        nodes.add(new Node(it++, x, y));
+        nodes.add(new Node(it++, x, y, dx, dx));
       }
     }
     
@@ -72,10 +74,17 @@ class Graph {
   }
   
   void render() {
-    for (Node n : nodes) {
+    for (Node n : nodes) 
       n.render();
+      
+    for (Wall w : walls) {
+      stroke(0);
+      strokeWeight(3);
+      w.render();
     }
-    cursor.render();
+    
+    if (tickerGeneration) 
+      cursor.render();
   }
   
   void tick() {
@@ -84,6 +93,20 @@ class Graph {
   
   void generateFullGraph() {
     cursor.searchDeep();
+    generateWalls();
+  }
+  
+  void generateWalls() {
+    // Search all nodes, compare neighbours to i/o links, 
+    // and create walls between unconnected nodes.
+    ArrayList<Node> neigs;
+    for (Node node : nodes) {
+      neigs = node.getUnlinkedNeighbours();
+      for (Node n : neigs) {
+        walls.add(new Wall(node, n));
+      }
+    }
+    
   }
   
 }
