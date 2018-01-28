@@ -1,6 +1,9 @@
 /*
   I woke up in New Year's and felt like playing around a little with mazes,
  no clear roadmap laid... ;)
+ 
+ TODO
+   - [ ] Node floor decrease is linear, which means it could reach the focal point. Make it 1/x or similar
  */
 
 import processing.pdf.*;

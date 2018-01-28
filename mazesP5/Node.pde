@@ -54,7 +54,7 @@ class Node {
     //}
     
     //text(this.visitDepth, x, y);
-    println("renderingnode " + id);
+    //println("renderingnode " + id);
     //println(v);
     if (!solid) renderFloor();
   }
@@ -83,38 +83,26 @@ class Node {
   }
   
   void computeFloor() {
+    //floorDepth = parent.depth + 0.001 * (parent.cursor.maxDepth - visitDepth);  // first is deepest
+    floorDepth = parent.depth + 0.0005 * visitDepth;  // first is shallowest
+
     // ugh, this looks so bad...
-    //depth = parent.depth;
-    //float dx = this.parent.centerX - x - w2,
-    //      dy = this.parent.centerY - y - h2;
-    //v[0] = x + dx * depth;
-    //v[1] = y + dy * depth;
-    //dx = this.parent.centerX - x + w2;
-    //v[2] = x + dx * depth;
-    //v[3] = y + dy * depth;
-    //dy = this.parent.centerY - y + h2;
-    //v[4] = x + dx * depth;
-    //v[5] = y + dy * depth;
-    //dx = this.parent.centerX - x - w2;
-    //v[6] = x + dx * depth;
-    //v[7] = y + dy * depth;
-    
     float dx = parent.centerX - (x - w2),
           dy = parent.centerY - (y - h2);
-    v[0] = x - w2 + dx * parent.depth;
-    v[1] = y - h2 + dy * parent.depth;
+    v[0] = x - w2 + dx * floorDepth;
+    v[1] = y - h2 + dy * floorDepth;
     
     dx = this.parent.centerX - (x + w2);
-    v[2] = x + w2 + dx * parent.depth;
-    v[3] = y - h2 + dy * parent.depth;
+    v[2] = x + w2 + dx * floorDepth;
+    v[3] = y - h2 + dy * floorDepth;
     
     dy = parent.centerY - (y + h2);
-    v[4] = x + w2 + dx * parent.depth;
-    v[5] = y + h2 + dy * parent.depth;
+    v[4] = x + w2 + dx * floorDepth;
+    v[5] = y + h2 + dy * floorDepth;
     
     dx = parent.centerX - (x - w2);
-    v[6] = x - w2 + dx * parent.depth;
-    v[7] = y + h2 + dy * parent.depth;
+    v[6] = x - w2 + dx * floorDepth;
+    v[7] = y + h2 + dy * floorDepth;
   }
 
   ArrayList<Node> getUnvisitedNeighbours() {

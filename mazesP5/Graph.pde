@@ -6,8 +6,8 @@ class Graph {
   Cursor cursor;
   Node startNode;
 
-  int cellsX = 11;
-  int cellsY = 11;
+  int cellsX = 21;
+  int cellsY = 21;
   float depth = 0.05;  // normalized distance to graph center
 
   float centerX, centerY;
@@ -25,8 +25,8 @@ class Graph {
     assignNeighbours(cellsX, cellsY);
     computeCenter();
 
-    this.startNode = nodes.get(nodes.size() / 2);  // central node
-    //this.startNode = nodes.get(nodes.size() - cellsX / 2 - 1);  // bottom center
+    //this.startNode = nodes.get(nodes.size() / 2);  // central node
+    this.startNode = nodes.get(nodes.size() - cellsX / 2 - 1);  // bottom center
     //this.startNode = nodes.get(cellsX + cellsX / 2);  // top center
     //this.startNode = nodes.get(cellsX);  // top left corner
     cursor = new Cursor(this, this.startNode);  // start from the center?
