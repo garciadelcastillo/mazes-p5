@@ -1,4 +1,5 @@
 class Node {
+
   int id;
   float x, y;
   boolean visited;
@@ -10,9 +11,9 @@ class Node {
 
   // Assuming square cells... (to improve)
   float w, h, w2, h2;
-  
+
   int visitDepth = 0;  // when the cursor reaches this node, how many nodes were visited before?
-  
+
   float[] v = new float[8];  // quad floor vertices
   float floorDepth = 0;      // quad floor depth relative to the baseline
 
@@ -48,15 +49,15 @@ class Node {
 
     //renderOutgoingLinks();
     //renderNeighbourConnections();
-    
+
     //if (this.solid) {
     //  quad(x - w2, y - h2, x + w2, y - h2, x + w2, y + h2, x - w2, y + h2);
     //}
-    
+
     //text(this.visitDepth, x, y);
     //println("renderingnode " + id);
     //println(v);
-    if (!solid) renderFloor();
+    renderFloor();
   }
 
   void renderNeighbourConnections() {
@@ -73,33 +74,39 @@ class Node {
       l.render();
     }
   }
-  
+
   void renderFloor() {
+    if (this.solid && !NODE_RENDER_SOLID) return;
     pushStyle();
     fill(255, 0, 0, 63);
     quad(v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
     //ellipse(v[0], v[1], 4, 4);
     popStyle();
   }
-  
-  void computeFloor() {
-    //floorDepth = parent.depth + 0.001 * (parent.cursor.maxDepth - visitDepth);  // first is deepest
-    floorDepth = parent.depth + 0.0005 * visitDepth;  // first is shallowest
+
+  void computeFloor() { 
+    if (solid) {
+      floorDepth = 0;
+    } else {
+      floorDepth = NODE_FLOOR_SHALLOW_FIRST ?
+        parent.depth + NODE_FLOOR_DEPTH_FACTOR * visitDepth :
+        parent.depth + NODE_FLOOR_DEPTH_FACTOR * (parent.cursor.maxDepth - visitDepth);
+    }
 
     // ugh, this looks so bad...
-    float dx = parent.centerX - (x - w2),
-          dy = parent.centerY - (y - h2);
+    float dx = parent.centerX - (x - w2), 
+      dy = parent.centerY - (y - h2);
     v[0] = x - w2 + dx * floorDepth;
     v[1] = y - h2 + dy * floorDepth;
-    
+
     dx = this.parent.centerX - (x + w2);
     v[2] = x + w2 + dx * floorDepth;
     v[3] = y - h2 + dy * floorDepth;
-    
+
     dy = parent.centerY - (y + h2);
     v[4] = x + w2 + dx * floorDepth;
     v[5] = y + h2 + dy * floorDepth;
-    
+
     dx = parent.centerX - (x - w2);
     v[6] = x - w2 + dx * floorDepth;
     v[7] = y + h2 + dy * floorDepth;

@@ -49,21 +49,29 @@ class Wall implements Comparable {
   // Creates a wall from the base plane down to the focal point a fixed height
   void computeVerticalWall() {
     // Compute quad wall depth points as a normalized distance to the center
+    Node n = n0.floorDepth > n1.floorDepth ? n0 : n1;
     v[0] = x0;
     v[1] = y0;
     v[2] = x1;
     v[3] = y1;
-    v[4] = v[2] + (parent.centerX - v[2]) * parent.depth;
-    v[5] = v[3] + (parent.centerY - v[3]) * parent.depth;
-    v[6] = v[0] + (parent.centerX - v[0]) * parent.depth;
-    v[7] = v[1] + (parent.centerY - v[1]) * parent.depth;
+    v[4] = v[2] + (parent.centerX - v[2]) * n.floorDepth;
+    v[5] = v[3] + (parent.centerY - v[3]) * n.floorDepth;
+    v[6] = v[0] + (parent.centerX - v[0]) * n.floorDepth;
+    v[7] = v[1] + (parent.centerY - v[1]) * n.floorDepth;
   }
 
   // Computes a wall between two neighbouring nodes.
   void computeInterstitialWall() {
-    
-    
-    
+    Node ntop = n0.floorDepth > n1.floorDepth ? n1 : n0,
+        nbottom = n0.floorDepth > n1.floorDepth ? n0 : n1;
+    v[0] = x0 + (parent.centerX - x0) * ntop.floorDepth;
+    v[1] = y0 + (parent.centerX - y0) * ntop.floorDepth;
+    v[2] = x1 + (parent.centerX - x1) * ntop.floorDepth;
+    v[3] = y1 + (parent.centerX - y1) * ntop.floorDepth;
+    v[4] = x1 + (parent.centerX - x1) * nbottom.floorDepth;
+    v[5] = y1 + (parent.centerX - y1) * nbottom.floorDepth;
+    v[6] = x0 + (parent.centerX - x0) * nbottom.floorDepth;
+    v[7] = y0 + (parent.centerX - y0) * nbottom.floorDepth;
     
   }
 

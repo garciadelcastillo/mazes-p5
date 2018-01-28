@@ -51,7 +51,7 @@ class Graph {
     int it = 0;
     float x, y;
     boolean solid = false;
-    
+
     for (int j = 0; j < countY; j++) {
       for (int i = 0; i < countX; i++) {
         x = 0.5 * dx + i * dx;
@@ -97,17 +97,17 @@ class Graph {
   }
 
   void render() {
-    for (Node n : nodes) 
-      n.render();
-
     for (Wall w : walls) {
       //w.renderLine();
       w.renderQuad();
     }
 
+    for (Node n : nodes) 
+      n.render();
+
     if (tickerGeneration) 
       cursor.render();
-      
+
     //ellipse(startNode.x, startNode.y, 4, 4);
   }
 
@@ -117,9 +117,15 @@ class Graph {
 
   void generateFullGraph() {
     cursor.searchDeep();
+    computeNodeFloor();
     generateWalls();
     sortWallsByDistance();
+    //computeNodeFloor();
+  }
+  
+  void updateGraphGeometry() {
     computeNodeFloor();
+    computeWalls();
   }
 
   void generateWalls() {
@@ -141,10 +147,16 @@ class Graph {
   void sortWallsByDistance() {
     Collections.sort(walls);  // sortable because it implements the Comparable interface
   }
-  
+
   void computeNodeFloor() {
     for (Node n : nodes) {
       n.computeFloor();
+    }
+  }
+  
+  void computeWalls() {
+    for (Wall w : walls) {
+      w.compute();
     }
   }
 }
