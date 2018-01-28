@@ -41,14 +41,15 @@ void draw() {
   textSize(12);
 
   //println(frameCount);
-
+  
+  graph.updateGraphGeometry();
   graph.render();
   //graph.tick();
   
   saveFrame("screenshots/maze_" + now() + "_" + nf(frameCount, 4) + ".png");
   
   oscAngle += PI / 60.0;
-  NODE_FLOOR_DEPTH_FACTOR = 0.001 * cos(oscAngle);
+  NODE_FLOOR_DEPTH_FACTOR = 0.001 * sin(oscAngle);
   if (oscAngle > PI) exit();
   
   //endRecord();
